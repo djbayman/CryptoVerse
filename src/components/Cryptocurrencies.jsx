@@ -9,8 +9,12 @@ const Cryptocurrencies = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchCrypto("coins"));
-  }, []);
+    dispatch(
+      fetchCrypto(
+        "https://coinranking1.p.rapidapi.com/coins?referenceCurrencyUuid=yhjMzLPhuIDl&timePeriod=24h&orderBy=marketCap&orderDirection=desc&limit=50&offset=0"
+      )
+    );
+  }, [dispatch]);
 
   const cryptoList = useSelector(selectAllCrypto);
 
@@ -24,8 +28,6 @@ const Cryptocurrencies = () => {
     setCryptos(filteredList);
   }, [termSearch, cryptoList]);
 
-  if (!cryptoList) return "Loading currencies...";
-
   return (
     <>
       {location.pathname === "/Cryptocurrencies" ? (
@@ -33,7 +35,7 @@ const Cryptocurrencies = () => {
           <div className="w-1/3 mx-auto my-8">
             <input
               type="text"
-              className="w-full  py-3 px-2  border-slate-600 border-2 rounded-md hover:outlint-none text-lg font-semibold"
+              className="w-full  py-3 px-2  border-slate-600 border-2 rounded-md focus:outline-none  font-semibold"
               placeholder="Search For Currencies"
               onChange={(e) => setTermSearch(e.target.value)}
             />

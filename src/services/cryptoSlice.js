@@ -8,37 +8,44 @@ import { v4 as uuid } from "uuid";
 export const fetchCrypto = createAsyncThunk(
   "crypto/fetchCrypto",
   async (param) => {
-    await fetch(`https://coinranking1.p.rapidapi.com/${param}`, {
+    const data = await fetch(param, {
       headers: {
         "X-RapidAPI-Key": import.meta.env.VITE_CURRENCIES_KEY,
         "X-RapidAPI-Host": "coinranking1.p.rapidapi.com",
       },
-    }).then((res) => res.json());
+    });
+    return data.json();
   }
 );
 
 export const fetchHistoryCoin = createAsyncThunk(
   "crypto/fetchHistoryCoin",
-  async (coinId, timeperiod) => {
-    return await fetch(
-      `https://coinranking1.p.rapidapi.com/coin/${coinId}/history?timeperiod=${timeperiod}`,
+  async (url) => {
+    const data = await fetch(
+      url,
+
       {
         headers: {
-          "X-RapidAPI-Key": import.meta.env.VITE_HISTORY_KEY,
+          "X-RapidAPI-Key": import.meta.env.VITE_CURRENCIES_KEY,
           "X-RapidAPI-Host": "coinranking1.p.rapidapi.com",
         },
       }
-    ).then((res) => res.json());
+    );
+    return data.json();
   }
 );
 
 export const fetchNews = createAsyncThunk("crypto/fetchNews", async () => {
-  return await fetch(`https://news67.p.rapidapi.com/v2/crypto`, {
-    headers: {
-      "X-RapidAPI-Key": import.meta.env.VITE_NEWS_KEY,
-      "X-RapidAPI-Host": "news67.p.rapidapi.com",
-    },
-  });
+  const data = await fetch(
+    `https://real-time-finance-data.p.rapidapi.com/currency-news?from_symbol=USD&language=en&to_symbol=EUR`,
+    {
+      headers: {
+        "X-RapidAPI-Key": import.meta.env.VITE_CURRENCIES_KEY,
+        "X-RapidAPI-Host": "real-time-finance-data.p.rapidapi.com",
+      },
+    }
+  );
+  return data.json();
 });
 
 const cryptoAdapter = createEntityAdapter({
@@ -56,6 +63,7 @@ const cryptoSlice = createSlice({
   name: "crypto",
   initialState: cryptoAdapter.getInitialState({
     loading: false,
+    error: false,
     stats: statsAdapter.getInitialState(),
     history: historyAdapter.getInitialState(),
     news: newsAdapter.getInitialState(),
@@ -69,8 +77,7 @@ const cryptoSlice = createSlice({
       .addCase(fetchCrypto.fulfilled, (state, { payload }) => {
         state.loading = false;
         payload.data.stats.id = 1;
-        let statsResult = [payload.data.stats];
-        // console.log(statsResult);
+        let statsResult = [payload?.data.stats];
         statsAdapter.setAll(state.stats, statsResult);
         cryptoAdapter.setAll(state, payload.data.coins);
       })
@@ -79,7 +86,6 @@ const cryptoSlice = createSlice({
       })
       .addCase(fetchHistoryCoin.fulfilled, (state, { payload }) => {
         state.loading = false;
-        // const historyId = uuid();
         payload.data.history.map((item) => {
           item.id = uuid();
           return item;
@@ -90,13 +96,12 @@ const cryptoSlice = createSlice({
         state.loading = true;
       })
       .addCase(fetchNews.fulfilled, (state, { payload }) => {
-        console.log(payload.news);
         state.loading = false;
-        payload.news.map((item) => {
+        payload?.data?.news.map((item) => {
           item.id = uuid();
           return item;
         });
-        newsAdapter.setAll(state.news, payload.news);
+        newsAdapter.setAll(state.news, payload?.data?.news);
       });
   },
 });

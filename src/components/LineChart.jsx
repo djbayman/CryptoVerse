@@ -1,78 +1,38 @@
 import Chart from "chart.js/auto";
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { fetchHistoryCoin, selectAllHistory } from "../services/cryptoSlice";
-import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
 
-const LineChart = ({ currentPrice, coinName, timeperiod }) => {
-  const { coinId } = useParams();
-  const dispatch = useDispatch();
-  const [data, setData] = useState();
-
-  console.log({ coinId, timeperiod });
-
-  useEffect(() => {
-    dispatch(fetchHistoryCoin(coinId, timeperiod)).then((res) => setData(res));
-  }, [timeperiod, coinId]);
-
-  // console.log(data);
-
-  const coinHistory = useSelector(selectAllHistory);
-
+const LineChart = ({ currentPrice, coinName, coinHistory }) => {
   const coinPrice = [];
   const coinTimestamp = [];
 
-  console.log({ coinPrice, coinTimestamp });
-
-  for (let i = 0; i < coinHistory?.length; i += 1) {
+  for (let i = 0; i < coinHistory?.length; i++) {
     coinPrice.push(coinHistory[i]?.price);
-  }
-  for (let i = 0; i < coinHistory?.length; i += 1) {
     coinTimestamp.push(
       new Date(coinHistory[i]?.timestamp).toLocaleDateString()
     );
   }
-  let myChart = null;
 
-  if (myChart) {
-    myChart.clear();
-    myChart.destroy();
-    myChart = async function () {
-      new Chart(document.getElementById("currencyChart"), {
-        type: "line",
-        data: {
-          labels: coinTimestamp,
-          datasets: [
-            {
-              label: "Price in USD",
-              data: coinPrice,
-            },
-          ],
-        },
-      });
+  useEffect(() => {
+    let config = {
+      type: "line",
+      data: {
+        labels: coinTimestamp,
+        datasets: [
+          {
+            label: "Price in USD",
+            data: coinPrice,
+          },
+        ],
+      },
     };
-    myChart();
-  } else {
-    myChart = async function () {
-      new Chart(document.getElementById("currencyChart"), {
-        type: "line",
-        data: {
-          labels: coinTimestamp,
-          datasets: [
-            {
-              label: "Price in USD",
-              data: coinPrice,
-            },
-          ],
-        },
-      });
-    };
-    myChart();
-  }
+
+    let myChart = new Chart(document.getElementById("currencyChart"), config);
+    return () => myChart.destroy();
+  }, [coinHistory]);
 
   return (
     <div className="">
-      <div className="text-2xl font-semibold my-4 w-80 ms-auto">
+      <div className="text-lg font-semibold text-right w-80 ms-auto ">
         <h1 className="">{coinName} Price Chart </h1>
         <p>
           Current {coinName} Price: $ {currentPrice}

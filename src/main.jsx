@@ -5,7 +5,6 @@ import "./index.css";
 import { Provider } from "react-redux";
 import store from "./app/store.js";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-// import storeTow from "./app/storeTow.js";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>

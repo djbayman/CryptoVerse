@@ -4,18 +4,20 @@ import DropDownMenu from "./DropDownMenu";
 
 const Navbar = () => {
   return (
-    <div className=" px-8 py-4 text-white  max-md:flex justify-between items-center">
-      <div className="logo  mb-8 flex items-center cursor-pointer">
-        <img src={currencyImg} alt="" className="me-4 inline w-20" />{" "}
-        <h1 className=" text-2xl font-bold text-blue-600">Cryptoverse</h1>
-      </div>
+    <div className="p-4  text-white  max-md:flex justify-between items-center">
+      <Link to="/">
+        <div className="logo   flex items-center cursor-pointer">
+          <img src={currencyImg} alt="" className="me-4 inline w-10" />{" "}
+          <h1 className=" text-xl font-bold ">Cryptoverse</h1>
+        </div>
+      </Link>
       <div className="block lg:hidden">
         <DropDownMenu />
       </div>
 
-      <ul className="ps-4  hidden lg:block">
+      <ul className="pt-10  hidden lg:block">
         <Link to="/">
-          <li className="text-lg font-semibold mb-3 flex gap-4 cursor-pointer hover:bg-slate-700 p-2 rounded-sm">
+          <li className=" font-semibold mb-3 flex gap-4 cursor-pointer hover:bg-slate-700 p-2 rounded-sm transition-colors">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -29,7 +31,7 @@ const Navbar = () => {
           </li>
         </Link>
         <Link to="/Cryptocurrencies">
-          <li className="text-lg font-semibold mb-3 flex gap-4 cursor-pointer hover:bg-slate-700 p-2 rounded-sm">
+          <li className=" font-semibold mb-3 flex gap-4 cursor-pointer hover:bg-slate-700 p-2 rounded-sm transition-colors">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -47,7 +49,7 @@ const Navbar = () => {
           </li>
         </Link>
         <Link to="/news">
-          <li className="text-lg font-semibold flex gap-4 cursor-pointer hover:bg-slate-700 p-2 rounded-md">
+          <li className=" font-semibold flex gap-4 cursor-pointer hover:bg-slate-700 p-2 rounded-md transition-colors">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"

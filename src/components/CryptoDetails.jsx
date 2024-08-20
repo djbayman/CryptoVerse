@@ -11,16 +11,36 @@ import {
   ThunderboltOutlined,
 } from "@ant-design/icons";
 import millify from "millify";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LineChart from "./LineChart";
-import { useSelector } from "react-redux";
-import { selectCryptoById } from "../services/cryptoSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchCrypto,
+  fetchHistoryCoin,
+  selectAllHistory,
+  selectCryptoById,
+} from "../services/cryptoSlice";
 
 const CryptoDetails = () => {
   const { coinId } = useParams();
   const [timeperiod, setTimePeriod] = useState("3h");
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(
+      fetchCrypto(
+        "https://coinranking1.p.rapidapi.com/coins?referenceCurrencyUuid=yhjMzLPhuIDl&timePeriod=24h&orderBy=marketCap&orderDirection=desc&limit=50&offset=0"
+      )
+    );
+    dispatch(
+      fetchHistoryCoin(
+        `https://coinranking1.p.rapidapi.com/coin/${coinId}/history?referenceCurrencyUuid=yhjMzLPhuIDl&timePeriod=${timeperiod}`
+      )
+    );
+  }, [timeperiod, coinId, dispatch]);
 
   const cryptoDetails = useSelector((state) => selectCryptoById(state, coinId));
+  const coinHistory = useSelector(selectAllHistory);
 
   const time = ["3h", "24h", "7d", "30d", "1y", "3m", "3y", "5y"];
 
@@ -89,16 +109,16 @@ const CryptoDetails = () => {
   return (
     <div className="px-8 bg-gray-200">
       <div className="header text-center mb-8 py-8 border-b-2 border-slate-200">
-        <h1 className="text-3xl text-blue-500 font-bold">
+        <h1 className="text-xl text-blue-500 font-bold">
           {cryptoDetails?.name} ({cryptoDetails?.symbol}) Price
         </h1>
-        <p className="text-lg mt-4 max-w-xl mx-auto font-semibold text-gray-400">
+        <p className=" mt-4 max-w-xl mx-auto font-semibold text-gray-400">
           {cryptoDetails?.name} live price in US Dollar (USD). View value
           statistics, market cap and supply.
         </p>
       </div>
       <select
-        className="w-40 bg-white px-3 py-2 rounded-md hover:outline-none text-xl font-medium"
+        className="w-40 bg-white px-2 py-1 rounded-md hover:outline-none font-semibold"
         defaultValue="3h"
         placeholder="Select Timeperiod"
         onChange={(e) => setTimePeriod(e.target.value)}
@@ -110,16 +130,16 @@ const CryptoDetails = () => {
         ))}
       </select>
       <LineChart
-        timeperiod={timeperiod}
+        coinHistory={coinHistory}
         currentPrice={millify(cryptoDetails?.price)}
         coinName={cryptoDetails?.name}
       />
-      <div className="flex justify-between my-8">
+      <div className="flex justify-between mt-8">
         <div className="oneCol w-2/5">
-          <h2 className="text-3xl font-semibold mb-4">
+          <h2 className="text-xl font-semibold mb-4">
             {cryptoDetails?.name} Value Statistics
           </h2>
-          <p className="text-2xl text-gray-600 ">
+          <p className="text-lg text-gray-600 ">
             An overview showing the statistics of {cryptoDetails?.name}, such as
             the base and quote currency, the rank, and trading volume.
           </p>
@@ -127,10 +147,10 @@ const CryptoDetails = () => {
             {stats.map(({ icon, title, value }) => (
               <li
                 key={title}
-                className="flex items-center text-2xl py-4 border-b-2 border-slate-400"
+                className="flex items-center text-lg py-2 border-b-2 border-slate-400"
               >
-                <p className="pb-3">
-                  <span className="mx-2 ">{icon}</span> {title}
+                <p className="pb-2">
+                  <span className="me-2 ">{icon}</span> {title}
                 </p>
                 <span className="ms-auto">{value}</span>
               </li>
@@ -138,19 +158,19 @@ const CryptoDetails = () => {
           </ul>
         </div>
         <div className="oneCol w-2/5">
-          <h2 className="text-3xl font-semibold mb-4">Other Stats Info</h2>
-          <p className="text-2xl text-gray-600 ">
+          <h2 className="text-xl font-semibold mb-4">Other Stats Info</h2>
+          <p className="text-lg text-gray-600 ">
             An overview showing the statistics of {cryptoDetails?.name}, such as
-            the base and quote currency, the rank, and trading volume.
+            Number of markets, Number of exchanges and more...
           </p>
           <ul className=" my-4">
             {genericStats.map(({ icon, title, value }) => (
               <li
                 key={title}
-                className="flex items-center text-2xl py-4 border-b-2 border-slate-400"
+                className="flex items-center text-lg py-2 border-b-2 border-slate-400"
               >
-                <p className="pb-3">
-                  <span className="mx-2 ">{icon}</span> {title}
+                <p className="pb-2">
+                  <span className="me-2 ">{icon}</span> {title}
                 </p>
                 <span className="ms-auto">{value}</span>
               </li>
