@@ -1,8 +1,11 @@
-# React + Vite
+# CryptoVerse 
+CryptoVerse is your go-to source for the latest updates on the currency market.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tech Stack:
+              - React.js
+              - TailwindCss
+              - Redux
+              - ReRESTful API (from Rapid api)
+            
+## Demo:
+https://crypto-verse-8vjvm6piu-aymanes-projects-27be667b.vercel.app/
